@@ -21,19 +21,21 @@ export const getGithubToken = async (req, res) => {
             const error = querystring.parse(response.data).error
             res.cookie("code_error", error, {
                 httpOnly: true,
-                domain: process.env.Cookie_url,
+                domain: process.env.COOKIE_URL,
                 secure: true,
                 sameSite: "none",
             });
+            console.log(process.env.COOKIE_URL)
          
             return res.status(401).send(error).redirect(process.env.BASE_URL);
         } else {
             // accessToken api所需要的token
             const cookieToken = await signToken(accessToken)
             //把accessToken加密後放到cookie內
+            console.log(process.env.COOKIE_URL)
             res.cookie("access_token", cookieToken, {
                 httpOnly: true,
-                domain: process.env.Cookie_url,
+                domain: process.env.COOKIE_URL,
                 secure: true,
                 sameSite: "none",
             });
