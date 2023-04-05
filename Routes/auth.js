@@ -16,6 +16,6 @@ router.post("/github/issue",createIssue)
 router.get("/github/logout",logout)
 
 router.post("/github/issue/updated",updatedIssue)
-router.post("/github/issue/deleted",closeIssue)
+router.get("/github/issue/deleted",closeIssue)
 export default router
 

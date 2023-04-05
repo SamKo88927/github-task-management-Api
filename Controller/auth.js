@@ -21,19 +21,18 @@ export const getGithubToken = async (req, res) => {
             const error = querystring.parse(response.data).error
             res.cookie("code_error", error, {
                 httpOnly: true,
-                domain: process.env.COOKIE_URL,
+                domain: "localhost",
             });
             return res.status(401).send(error).redirect(process.env.BASE_URL);
         } else {
             // accessToken api所需要的token
             const cookieToken = await signToken(accessToken)
             //把accessToken加密後放到cookie內
-            console.log(cookieToken)
-            res.cookie("access_token", cookieToken, {
+         res.cookie("access_token", cookieToken, {
                 httpOnly: true,
-                domain: process.env.COOKIE_URL,
+                domain: "localhost",
             })
-            res.redirect(process.env.BASE_URL)
+            return  res.redirect(process.env.BASE_URL)
         }
     } catch (error) {
         return res.status(500).send(error);
@@ -122,7 +121,7 @@ export const getAllIssue = async (req, res) => {
             //所以因為預設是30 每增加一次是10筆 所以per_page可以為10 而預設的page可以為30以後往下加1
             const offset = Number(req.query.offset)
             if (offset == 0) {
-                const response = await axios.get(`https://api.github.com/issues?per_page=5&direction=asc&filter=created`, {
+                const response = await axios.get(`https://api.github.com/issues?per_page=30&direction=asc&filter=created`, {
                     headers: {
                         Accept: "application/json",
                         Authorization: `Bearer ${accessToken}`
@@ -130,7 +129,7 @@ export const getAllIssue = async (req, res) => {
                 })
                 return res.status(200).json(response.data);
             } else { //後來req.query.offset == 1,2,3 代表要新增每次的搜尋 +4為 原本的30個 往後每10個就新增
-                const response = await axios.get(`https://api.github.com/issues?direction=asc&page=${offset + 5}&per_page=1`, {
+                const response = await axios.get(`https://api.github.com/issues?direction=asc&page=${offset + 4}&per_page=10`, {
                     headers: {
                         Accept: "application/json",
                         Authorization: `Bearer ${accessToken}`
@@ -272,6 +271,7 @@ export const updatedIssue = async (req, res, next) => {
 }
 
 export const closeIssue = async (req, res) => {
+    const getRepoIssuesUrl = req.query.url
     if (req.cookies.access_token == "") {
         console.log("Access_token is empty")
     }
@@ -279,9 +279,11 @@ export const closeIssue = async (req, res) => {
         try {
             const accessToken = await verifyToken(req)
             //解碼
+            console.log(getRepoIssuesUrl)
             try {
-                const response = await axios.patch(`https://api.github.com/repos/${req.body.own}/${req.body.repo}/issues/${req.body.number}`,
+                const response = await axios.patch(`https://api.github.com/repos/${getRepoIssuesUrl}`,
                     {
+                        labels:["Done"],
                         state: "closed"
                     },
                     {
@@ -291,6 +293,7 @@ export const closeIssue = async (req, res) => {
                         }
                     }
                 )
+
                 return res.status(200).json(response.data);
             } catch (error) {
                 console.log(error)
