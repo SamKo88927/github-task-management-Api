@@ -32,7 +32,7 @@ export const getGithubToken = async (req, res) => {
             //把accessToken加密後放到cookie內
             console.log(process.env.COOKIE_URL)
             try{ 
-                res.cookie("access_token", cookieToken, {
+                res.cookie("accesstoken", cookieToken, {
                 httpOnly: true,
                 domain: process.env.COOKIE_URL,
                 secure: true,
