@@ -215,7 +215,8 @@ export const createIssue = async (req, res, next) => {
             const accessToken = await verifyToken(req)
             //解碼
             try {
-                const response = await axios.post(`https://api.github.com/repos/${req.body.own}/${req.body.repo}/issues`, req.body,
+                console.log(req.body)
+                const response = await axios.post(`https://api.github.com/repos/${req.body.user}/${req.body.repo}/issues`, req.body,
                     {
                         headers: {
                             Accept: "application/json",
@@ -227,7 +228,7 @@ export const createIssue = async (req, res, next) => {
                 return res.status(200).json(response.data);
             } catch (error) {
                 console.log(error)
-                return res.status(500).send(error);
+                return res.status(500).send("lacking of own/repo");
             }
         } catch (error) {
             console.log(error)
@@ -269,7 +270,6 @@ export const updatedIssue = async (req, res, next) => {
         }
     }
 }
-
 export const closeIssue = async (req, res) => {
     const getRepoIssuesUrl = req.query.url
     if (req.cookies.access_token == "") {
