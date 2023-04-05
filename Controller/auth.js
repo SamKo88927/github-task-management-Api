@@ -30,6 +30,7 @@ export const getGithubToken = async (req, res) => {
             // accessToken api所需要的token
             const cookieToken = await signToken(accessToken)
             //把accessToken加密後放到cookie內
+            console.log(cookieToken)
             res.cookie("access_token", cookieToken, {
                 httpOnly: true,
                 domain: process.env.COOKIE_URL,
