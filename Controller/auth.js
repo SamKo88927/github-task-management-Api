@@ -21,7 +21,7 @@ export const getGithubToken = async (req, res) => {
             const error = querystring.parse(response.data).error
             res.cookie("code_error", error, {
                 httpOnly: true,
-                domain: "localhost",
+                domain: process.env.BASE_URL,
             });
             return res.status(401).send(error).redirect(process.env.BASE_URL);
         } else {
@@ -30,7 +30,7 @@ export const getGithubToken = async (req, res) => {
             //把accessToken加密後放到cookie內
             res.cookie("access_token", cookieToken, {
                 httpOnly: true,
-                domain: "localhost",
+                domain: process.env.BASE_URL,
             });
             res.redirect(process.env.BASE_URL)
         }
