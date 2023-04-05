@@ -22,10 +22,8 @@ export const getGithubToken = async (req, res) => {
             res.cookie("code_error", error, {
                 httpOnly: true,
                 domain: process.env.COOKIE_URL,
-                secure: true,
-                sameSite: "none",
             });
-            // return res.status(401).send(error).redirect(process.env.BASE_URL);
+            return res.status(401).send(error).redirect(process.env.BASE_URL);
         } else {
             // accessToken api所需要的token
             const cookieToken = await signToken(accessToken)
@@ -34,10 +32,8 @@ export const getGithubToken = async (req, res) => {
             res.cookie("access_token", cookieToken, {
                 httpOnly: true,
                 domain: process.env.COOKIE_URL,
-                secure: true,
-                sameSite: "none",
             })
-            // res.redirect(process.env.BASE_URL)
+            res.redirect(process.env.BASE_URL)
         }
     } catch (error) {
         return res.status(500).send(error);
