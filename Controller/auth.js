@@ -22,20 +22,21 @@ export const getGithubToken = async (req, res) => {
             res.cookie("code_error", error, {
                 httpOnly: true,
                 domain: process.env.BASE_URL,
+                secure: true,
+                sameSite: "none",
             });
-            console.log(error)
-            console.log(process.env.BASE_URL)
+         
             return res.status(401).send(error).redirect(process.env.BASE_URL);
         } else {
             // accessToken api所需要的token
             const cookieToken = await signToken(accessToken)
             //把accessToken加密後放到cookie內
-            console.log(cookieToken)
             res.cookie("access_token", cookieToken, {
                 httpOnly: true,
                 domain: process.env.BASE_URL,
+                secure: true,
+                sameSite: "none",
             });
-            console.log(process.env.BASE_URL)
             res.redirect(process.env.BASE_URL)
         }
     } catch (error) {
@@ -177,8 +178,8 @@ export const searchIssue = async (req, res) => {
     else {
         try {
             const searchBody = req.query.search
-            const searchUser = req.query.user? "+user:"+req.query.user :""
-            const searchRepo = req.query.repo? "+repo:"+req.query.repo:""
+            const searchUser = req.query.user ? "+user:" + req.query.user : ""
+            const searchRepo = req.query.repo ? "+repo:" + req.query.repo : ""
             const offset = Number(req.query.offset)
             const accessToken = await verifyToken(req)
             console.log(req.query)
@@ -200,7 +201,7 @@ export const searchIssue = async (req, res) => {
                         Authorization: `Bearer ${accessToken}`
                     }
                 })
-                return res.status(200).json(response.data.items);           
+                return res.status(200).json(response.data.items);
             }
         } catch (error) {
             return res.status(500).send(error);
@@ -208,7 +209,7 @@ export const searchIssue = async (req, res) => {
     }
 };
 
-export const createIssue = async (req, res,next) => {
+export const createIssue = async (req, res, next) => {
     if (req.cookies.access_token == "") {
         console.log("Access_token is empty")
     }
