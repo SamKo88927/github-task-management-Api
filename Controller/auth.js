@@ -21,7 +21,7 @@ export const getGithubToken = async (req, res) => {
             const error = querystring.parse(response.data).error
             res.cookie("code_error", error, {
                 httpOnly: true,
-                domain: process.env.BASE_URL,
+                domain: process.env.Cookie_url,
                 secure: true,
                 sameSite: "none",
             });
@@ -33,7 +33,7 @@ export const getGithubToken = async (req, res) => {
             //把accessToken加密後放到cookie內
             res.cookie("access_token", cookieToken, {
                 httpOnly: true,
-                domain: process.env.BASE_URL,
+                domain: process.env.Cookie_url,
                 secure: true,
                 sameSite: "none",
             });
